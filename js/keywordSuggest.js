@@ -34,9 +34,9 @@ export function keywordSuggest(
   function init() {
     if (!inputElement.hasAttribute('data-event-attached')) {
       addEventListeners();
+      fetchTSVData();
       inputElement.setAttribute('data-event-attached', 'true');
     }
-    fetchTSVData(); // Always fetch data during initialization
   }
 
   /**
