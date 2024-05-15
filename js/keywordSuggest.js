@@ -3,15 +3,13 @@
  *
  * @param {string} input_box_id - The ID of the input box element.
  * @param {string} data_path - The path to the TSV file containing keyword data.
- * @param {string} api_url - The URL of the API to fetch additional keyword suggestions.
- * @param {boolean} includeNoMatch - Whether to include a "No Match" option when no keywords are found.
+ * @param {Object} [options={}] - An options object to specify additional settings.
+ * @param {string} [options.api_url=''] - The URL of the API to fetch additional keyword suggestions (optional).
+ * @param {boolean} [options.includeNoMatch=false] - Whether to include a "No Match" option when no keywords are found (optional).
  */
-export function keywordSuggest(
-  input_box_id,
-  data_path,
-  api_url = '',
-  includeNoMatch = false
-) {
+export function keywordSuggest(input_box_id, data_path, options = {}) {
+  const { api_url = '', includeNoMatch = false } = options;
+
   let diseases = [];
   let selectedIndex = -1;
   let currentKeywords = [];
@@ -151,7 +149,7 @@ export function keywordSuggest(
       .join('');
 
     const hitCountText = fromAPI
-      ? `ヒット件数 [0] <span class="suggestion-hint">もしかして</span>`
+      ? `ヒット件数 [0] <span class="suggestion-hint">もしかして:</span>`
       : `ヒット件数 [${hitCount}]`;
 
     suggestBoxContainer.innerHTML = `

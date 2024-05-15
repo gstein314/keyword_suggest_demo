@@ -6,20 +6,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputBox3 = document.getElementById('inputBox3');
 
   inputBox1.addEventListener('input', () => {
-    keywordSuggest(
-      'inputBox1',
-      '../tsv/nando_sample.tsv',
-      'http://localhost:5555/moshikashite_test_api?text=',
-      false
-    );
+    keywordSuggest('inputBox1', '../tsv/nando_sample.tsv', {
+      api_url: 'http://localhost:5555/moshikashite_test_api?text=',
+      includeNoMatch: true,
+    });
   });
 
   inputBox2.addEventListener('input', () => {
-    keywordSuggest('inputBox2', '../tsv/mondo_sample.tsv', '', false);
+    keywordSuggest('inputBox2', '../tsv/mondo_sample.tsv', {
+      includeNoMatch: true,
+    });
   });
 
   inputBox3.addEventListener('input', () => {
-    keywordSuggest('inputBox3', '../tsv/icd10_sample.tsv', '', false);
+    keywordSuggest('inputBox3', '../tsv/icd10_sample.tsv');
   });
 
   document.addEventListener('selectedLabel', function (event) {
