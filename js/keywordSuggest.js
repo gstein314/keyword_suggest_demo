@@ -76,7 +76,7 @@ export function keywordSuggest(
           }" data-id="${disease.ID}" data-label-en="${
             disease.label_en
           }" data-label-ja="${disease.label_ja}">
-            <span class="disease-id">${disease.ID}</span>
+            <span class="label-id">${disease.ID}</span>
             <div class="label-container">
               <span class="main-name">${disease.label_ja}</span>
               ${synonyms}
@@ -112,7 +112,6 @@ export function keywordSuggest(
   function keyboardNavigation(event) {
     const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
     let newIndex = selectedIndex;
-    console.log(newIndex);
 
     if (event.key === 'ArrowDown') {
       event.preventDefault();

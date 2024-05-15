@@ -24,6 +24,11 @@ input:focus {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0);
 }
 
+.hit-count {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
 .suggestion-item {
   padding: 6px 12px;
   cursor: pointer;
@@ -32,9 +37,19 @@ input:focus {
   font-family: 'Muli', sans-serif;
   font-size: 14px;
 }
+
 .suggestion-item.selected {
-  background-color: #b8daff; /* 選択時の背景色を設定 */
+  background-color: #34508a; /* 選択時の背景色を設定 */
   color: #212529; /* 選択時のテキスト色を調整 */
+  .label-id {
+    color: #fff;
+  }
+  .main-name {
+    color: #f2d2d7;
+  }
+  .synonyms {
+    color: #fff;
+  }
 }
 
 .main-name {
