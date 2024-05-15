@@ -97,8 +97,9 @@ export function keywordSuggest(
    * Displays the suggestion results in the suggestion box.
    *
    * @param {Array<Object>} results - The list of suggested keywords.
+   * @param {boolean} fromAPI - Whether the results are from the API.
    */
-  function displayResults(results) {
+  function displayResults(results, fromAPI = false) {
     let hitCount = results.length;
     let suggestionsHtml = '';
 
@@ -134,8 +135,12 @@ export function keywordSuggest(
         .join('');
     }
 
+    const hitCountText = fromAPI
+      ? `ヒット件数 [0] <span class="suggestion-hint">もしかして:</span>`
+      : `ヒット件数 [${hitCount}]`;
+
     suggestBoxContainer.innerHTML = `
-      <div class="hit-count">ヒット件数 [${results.length}]</div>
+      <div class="hit-count">${hitCountText}</div>
       ${suggestionsHtml}
     `;
 
@@ -163,9 +168,9 @@ export function keywordSuggest(
     if (results.length === 0 && api_url) {
       fetchFromAPI(searchValue).then((apiResults) => {
         if (apiResults.length === 0 && includeNoMatch) {
-          displayResults([]);
+          displayResults([], true);
         } else {
-          displayResults(apiResults);
+          displayResults(apiResults, true);
         }
       });
     } else {
@@ -292,6 +297,7 @@ export function keywordSuggest(
       });
     });
   }
+
   /**
    * Fetches keyword suggestions from the API.
    *
