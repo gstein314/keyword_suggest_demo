@@ -36,14 +36,14 @@ export function keywordSuggest(
       addEventListeners();
       inputElement.setAttribute('data-event-attached', 'true');
     }
-    fetchTSVData();
+    fetchTSVData(); // Always fetch data during initialization
   }
 
   /**
    * Adds necessary event listeners to the input element.
    */
   function addEventListeners() {
-    inputElement.addEventListener('input', inputEventListener);
+    inputElement.addEventListener('input', debounce(inputEventListener, 300));
     inputElement.addEventListener('keydown', keyboardNavigation);
     inputElement.addEventListener('compositionstart', () => {
       isComposing = true;
@@ -51,6 +51,21 @@ export function keywordSuggest(
     inputElement.addEventListener('compositionend', () => {
       isComposing = false;
     });
+  }
+
+  /**
+   * Debounce function to delay the execution of a function.
+   *
+   * @param {Function} func - The function to debounce.
+   * @param {number} wait - The time to wait before executing the function, in milliseconds.
+   * @returns {Function} - The debounced function.
+   */
+  function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
   }
 
   /**
