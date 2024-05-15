@@ -292,7 +292,6 @@ export function keywordSuggest(
       });
     });
   }
-
   /**
    * Fetches keyword suggestions from the API.
    *
@@ -300,14 +299,13 @@ export function keywordSuggest(
    * @returns {Promise<Array<Object>>} A promise that resolves to the list of suggested keywords.
    */
   function fetchFromAPI(searchValue) {
-    const params = new URLSearchParams({
-      query: searchValue,
-    });
-    return fetch(`${api_url}?${params.toString()}`)
+    const url = `${api_url}${encodeURIComponent(searchValue)}`;
+
+    return fetch(url)
       .then((response) => response.json())
       .then((data) =>
         data.map((disease) => ({
-          ID: disease.id,
+          ID: disease.ID,
           label_ja: disease.label_ja,
           synonym_ja: disease.synonym_ja,
           label_en: disease.label_en,

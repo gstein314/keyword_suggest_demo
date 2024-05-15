@@ -6,7 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputBox3 = document.getElementById('inputBox3');
 
   inputBox1.addEventListener('input', () => {
-    keywordSuggest('inputBox1', '../tsv/nando_sample.tsv', '', true);
+    keywordSuggest(
+      'inputBox1',
+      '../tsv/nando_sample.tsv',
+      'http://localhost:5555/moshikashite_test_api?text=',
+      true
+    );
   });
 
   inputBox2.addEventListener('input', () => {
