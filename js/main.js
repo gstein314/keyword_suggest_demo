@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'inputBox1',
       '../tsv/nando_sample.tsv',
       'http://localhost:5555/moshikashite_test_api?text=',
-      true
+      false
     );
   });
 

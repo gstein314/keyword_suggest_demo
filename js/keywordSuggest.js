@@ -100,49 +100,49 @@ export function keywordSuggest(
    * @param {boolean} fromAPI - Whether the results are from the API.
    */
   function displayResults(results, fromAPI = false) {
-    let hitCount = results.length;
+    let hitCount = fromAPI ? 0 : results.length;
     let suggestionsHtml = '';
 
     if (hitCount === 0 && includeNoMatch) {
       suggestionsHtml = `
-        <div class="suggestion-item selected" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
-          ' '
-        )}">
-          <span class="label-id">該当なし</span>
-          <div class="label-container">
-            <span class="main-name">${currentKeywords.join(' ')}</span>
-          </div>
-        </div>`;
-    } else {
-      suggestionsHtml = results
-        .map((disease, index) => {
-          const synonyms = disease.synonym_ja
-            ? `<span class="synonyms">| ${disease.synonym_ja}</span>`
-            : '';
-          return `
-          <div class="suggestion-item ${
-            index === 0 ? 'selected' : ''
-          }" data-id="${disease.ID}" data-label-en="${
-            disease.label_en
-          }" data-label-ja="${disease.label_ja}">
-            <span class="label-id">${disease.ID}</span>
-            <div class="label-container">
-              <span class="main-name">${disease.label_ja}</span>
-              ${synonyms}
-            </div>
-          </div>`;
-        })
-        .join('');
+      <div class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
+        ' '
+      )}">
+        <span class="label-id">該当なし</span>
+        <div class="label-container">
+          <span class="main-name">${currentKeywords.join(' ')}</span>
+        </div>
+      </div>`;
     }
 
+    suggestionsHtml += results
+      .map((disease, index) => {
+        const synonyms = disease.synonym_ja
+          ? `<span class="synonyms">| ${disease.synonym_ja}</span>`
+          : '';
+        return `
+      <div class="suggestion-item ${
+        index === 0 && !suggestionsHtml ? 'selected' : ''
+      }" data-id="${disease.ID}" data-label-en="${
+          disease.label_en
+        }" data-label-ja="${disease.label_ja}">
+        <span class="label-id">${disease.ID}</span>
+        <div class="label-container">
+          <span class="main-name">${disease.label_ja}</span>
+          ${synonyms}
+        </div>
+      </div>`;
+      })
+      .join('');
+
     const hitCountText = fromAPI
-      ? `ヒット件数 [0] <span class="suggestion-hint">もしかして:</span>`
+      ? `ヒット件数 [0] <span class="suggestion-hint">もしかして</span>`
       : `ヒット件数 [${hitCount}]`;
 
     suggestBoxContainer.innerHTML = `
-      <div class="hit-count">${hitCountText}</div>
-      ${suggestionsHtml}
-    `;
+    <div class="hit-count">${hitCountText}</div>
+    ${suggestionsHtml}
+  `;
 
     suggestBoxContainer.style.display = 'block';
     selectedIndex = results.length > 0 ? 0 : includeNoMatch ? 0 : -1;
