@@ -251,7 +251,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       function clickEventListener() {
         const isNoMatch = item.getAttribute('data-id') === '該当なし';
         const labelInfo = {
-          id: isNoMatch ? '' : item.getAttribute('data-id'),
+          ID: isNoMatch ? '' : item.getAttribute('data-id'),
           label_en: isNoMatch ? '' : item.getAttribute('data-label-en'),
           label_ja: isNoMatch ? '' : item.getAttribute('data-label-ja'),
           keyword: isNoMatch
