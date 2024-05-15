@@ -1,0 +1,31 @@
+ID	label_en	synonym_en	label_ja	synonym_ja
+MONDO:0000004	adrenocortical insufficiency	adrenal cortical hypofunction|adrenal cortical insufficiency|adrenal gland insufficiency|adrenal insufficiency|corticoadrenal insufficiency|hypocortisolemia|hypocortisolism	副腎皮質機能低下症	副腎皮質機能不全|副腎皮質機能低下
+MONDO:0000005	alopecia, isolated		脱毛症, 孤立性	
+MONDO:0000009	inherited bleeding disorder, platelet-type		遺伝性出血性障害, 血小板型	先天性出血性障害, 血小板型|遺伝性出血性疾患, 血小板型
+MONDO:0000014	colorblindness, partial		色盲, 部分	
+MONDO:0000015	classic complement early component deficiency		古典的補体早期成分欠損症	
+MONDO:0000022	nocturnal enuresis		夜尿症	夜間遺尿症
+MONDO:0000023	infantile liver failure		乳児肝不全	
+MONDO:0000030	sleep-related hypermotor epilepsy		睡眠関連過運動てんかん	
+MONDO:0000032	febrile seizures, familial		熱性けいれん, 家族性	熱性痙攣, 家族性
+MONDO:0000044	hereditary hypophosphatemic rickets		遺伝性低リン血性くる病	
+MONDO:0000045	hypothyroidism, congenital, nongoitrous		甲状腺機能低下症, 先天性, 非甲状腺腫性	
+MONDO:0000050	isolated congenital growth hormone deficiency		先天性成長ホルモン単独欠損症	
+MONDO:0000060	microcephalic osteodysplastic primordial dwarfism		小頭性骨異形成性原発性小人症	
+MONDO:0000062	isolated microphthalmia		孤立性小眼球症	
+MONDO:0000065	microvascular complications of diabetes, susceptibility		糖尿病性細小血管合併症, 感受性	
+MONDO:0010581	diabetes insipidus, nephrogenic, X-linked		尿崩症, 腎性, X連鎖性	
+MONDO:0010583	Dyggve-Melchior-Clausen syndrome, X-linked		Dyggve-Mechior-Clausen 症候群, X連鎖性	
+MONDO:0010584	dyskeratosis congenita, X-linked		先天性角化異常症, X連鎖性	
+MONDO:0010585	X-linked hypohidrotic ectodermal dysplasia		外胚葉形成不全 1, 低汗型, X連鎖性 (XHED)	
+MONDO:0010586	X-linked Ehlers-Danlos syndrome		X連鎖性エーラス・ダンロス症候群	X連鎖性Ehlers-Danlos症候群|エーラス・ダンロス症候群5|型|EDS5
+MONDO:0010587	epidermodysplasia verruciformis, X-linked		疣贅状表皮発育異常症,X連鎖性(EDVX; EDV2)	
+MONDO:0010588	exudative vitreoretinopathy 2, X-linked		滲出性硝子体網膜症2, X連鎖性	
+MONDO:0010589	Aarskog-Scott syndrome, X-linked		Aarskog-Scott 症候群	
+MONDO:0010590	FG syndrome 1		Opitz-Kaveggia 症候群	
+MONDO:0013606	Hermansky-Pudlak syndrome 9		ヘルマンスキー・パドラック症候群9	Hermansky-Pudlak症候群9
+MONDO:0013607	monocytopenia with susceptibility to infections		感染症に罹患しやすい単球減少症	
+MONDO:0013608	Joubert syndrome 13		ジュベール症候群13	Joubert症候群13
+MONDO:0013609	Meckel syndrome, type 10		メッケル症候群, 10型	Meckel症候群, 10型
+MONDO:0013610	retinitis pigmentosa 61		網膜色素変性症61	
+MONDO:0013611	retinitis pigmentosa 62		網膜色素変性症62	
