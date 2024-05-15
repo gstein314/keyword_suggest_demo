@@ -7,6 +7,7 @@ export function keywordSuggest(
   let diseases = [];
   let selectedIndex = -1;
   let currentKeywords = [];
+  let isComposing = false;
   const inputElement = document.getElementById(input_box_id);
   let suggestBoxContainer = document.getElementById(
     input_box_id + '_suggestBox'
@@ -30,6 +31,12 @@ export function keywordSuggest(
   function addEventListeners() {
     inputElement.addEventListener('input', inputEventListener);
     inputElement.addEventListener('keydown', keyboardNavigation);
+    inputElement.addEventListener('compositionstart', () => {
+      isComposing = true;
+    });
+    inputElement.addEventListener('compositionend', () => {
+      isComposing = false;
+    });
   }
 
   function fetchTSVData() {
@@ -64,7 +71,7 @@ export function keywordSuggest(
     const hitCount = results.length;
     suggestBoxContainer.style.display = 'block';
     suggestBoxContainer.innerHTML = `
-      <div class="hit-count">ヒット件数: [${hitCount}]</div>
+      <div class="hit-count">ヒット件数 [${hitCount}]</div>
       ${results
         .map((disease, index) => {
           const synonyms = disease.synonym_ja
@@ -110,6 +117,8 @@ export function keywordSuggest(
   }
 
   function keyboardNavigation(event) {
+    if (isComposing) return;
+
     const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
     let newIndex = selectedIndex;
 
