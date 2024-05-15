@@ -7,22 +7,32 @@ export function keywordSuggest(
   let diseases = [];
   let selectedIndex = -1;
   let currentKeywords = [];
-
   const inputElement = document.getElementById(input_box_id);
   let suggestBoxContainer = document.getElementById(
     input_box_id + '_suggestBox'
   );
+
   if (!suggestBoxContainer) {
     suggestBoxContainer = createSuggestBoxContainer(inputElement);
   }
 
-  function init() {
-    inputElement.removeEventListener('input', inputEventListener);
-    inputElement.removeEventListener('keydown', keyboardNavigation);
+  // 初期化関数を呼び出し
+  init();
 
+  function init() {
+    if (!inputElement.hasAttribute('data-event-attached')) {
+      addEventListeners();
+      inputElement.setAttribute('data-event-attached', 'true');
+    }
+    fetchTSVData();
+  }
+
+  function addEventListeners() {
     inputElement.addEventListener('input', inputEventListener);
     inputElement.addEventListener('keydown', keyboardNavigation);
+  }
 
+  function fetchTSVData() {
     fetch(data_path)
       .then((response) => response.text())
       .then((tsvData) => {
@@ -45,86 +55,64 @@ export function keywordSuggest(
     return suggestBoxContainer;
   }
 
-  function clearSuggestBox(suggestBoxContainer) {
-    if (suggestBoxContainer) {
-      suggestBoxContainer.innerHTML = '';
-      suggestBoxContainer.style.display = 'none';
-    }
+  function clearSuggestBox() {
+    suggestBoxContainer.innerHTML = '';
+    suggestBoxContainer.style.display = 'none';
   }
 
-  function displayResults(diseases, container, keywords, inputBoxId) {
-    const hitCount = diseases.length;
-    container.style.display = 'block';
-    container.innerHTML = `
+  function displayResults(results) {
+    const hitCount = results.length;
+    suggestBoxContainer.style.display = 'block';
+    suggestBoxContainer.innerHTML = `
       <div class="hit-count">ヒット件数: [${hitCount}]</div>
-      ${diseases
+      ${results
         .map((disease, index) => {
           const synonyms = disease.synonym_ja
             ? `<span class="synonyms">| ${disease.synonym_ja}</span>`
             : '';
           return `
-          <div class="suggestion-item ${index === 0 ? 'selected' : ''}" 
-            data-id="${disease.ID}" 
-            data-label-en="${disease.label_en}" 
-            data-label-ja="${disease.label_ja}">
+          <div class="suggestion-item ${
+            index === 0 ? 'selected' : ''
+          }" data-id="${disease.ID}" data-label-en="${
+            disease.label_en
+          }" data-label-ja="${disease.label_ja}">
             <span class="disease-id">${disease.ID}</span>
             <div class="label-container">
               <span class="main-name">${disease.label_ja}</span>
               ${synonyms}
             </div>
-          </div>
-        `;
+          </div>`;
         })
         .join('')}
     `;
     selectedIndex = hitCount > 0 ? 0 : -1;
-    attachClickListeners(currentKeywords, inputBoxId);
-    updateSelection(container.querySelectorAll('.suggestion-item'));
-    attachHoverListeners();
-  }
-
-  function attachHoverListeners() {
-    const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
-    items.forEach((item, index) => {
-      item.addEventListener('mouseover', () => {
-        selectedIndex = index; // hoverされた時にselectedIndexを更新
-        updateSelection(items); // UIの選択状態を更新
-      });
-    });
+    attachListeners();
+    updateSelection(selectedIndex);
   }
 
   function inputEventListener(event) {
     const searchValue = event.target.value.toLowerCase();
     if (searchValue.length < 2) {
-      clearSuggestBox(suggestBoxContainer);
+      clearSuggestBox();
       return;
     }
 
     currentKeywords = searchValue.split(/\s+/);
     let results = searchInLocalData(diseases, currentKeywords);
 
-    if (results?.length === 0 && api_url) {
-      fetchFromAPI(api_url, searchValue, keyword_option).then((apiResults) => {
-        displayResults(
-          apiResults,
-          suggestBoxContainer,
-          currentKeywords,
-          input_box_id
-        );
+    if (results.length === 0 && api_url) {
+      fetchFromAPI(searchValue).then((apiResults) => {
+        displayResults(apiResults);
       });
     } else {
-      displayResults(
-        results,
-        suggestBoxContainer,
-        currentKeywords,
-        input_box_id
-      );
+      displayResults(results);
     }
   }
 
   function keyboardNavigation(event) {
     const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
-    let newIndex = selectedIndex; // 現在のselectedIndexを基に計算
+    let newIndex = selectedIndex;
+    console.log(newIndex);
 
     if (event.key === 'ArrowDown') {
       event.preventDefault();
@@ -133,44 +121,53 @@ export function keywordSuggest(
       event.preventDefault();
       newIndex = selectedIndex > 0 ? selectedIndex - 1 : items.length - 1;
     } else if (event.key === 'Enter' && selectedIndex >= 0) {
-      items[selectedIndex]?.click(); // 確実にアイテムがある場合のみクリック
+      items[selectedIndex]?.click();
     }
 
     if (newIndex !== selectedIndex) {
-      selectedIndex = newIndex;
-      updateSelection(items);
+      updateSelection(newIndex);
     }
   }
 
-  function updateSelection(items) {
+  function updateSelection(newIndex) {
+    const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
+    selectedIndex = newIndex;
     items.forEach((item, index) => {
+      item.classList.toggle('selected', index === selectedIndex);
       if (index === selectedIndex) {
-        item.classList.add('selected');
-        item.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); // 選択された要素が表示領域内に来るようにスクロール
-      } else {
-        item.classList.remove('selected');
+        item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
     });
   }
 
-  function attachClickListeners(keywords, inputBoxId) {
-    suggestBoxContainer.querySelectorAll('.suggestion-item').forEach((item) => {
-      item.addEventListener('click', () => {
+  function attachListeners() {
+    const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
+    items.forEach((item, index) => {
+      item.removeEventListener('mouseover', hoverEventListener);
+      item.addEventListener('mouseover', hoverEventListener);
+      item.removeEventListener('click', clickEventListener);
+      item.addEventListener('click', clickEventListener);
+
+      function hoverEventListener() {
+        updateSelection(index);
+      }
+
+      function clickEventListener() {
         const labelInfo = {
           id: item.getAttribute('data-id'),
           label_en: item.getAttribute('data-label-en'),
           label_ja: item.getAttribute('data-label-ja'),
-          keyword: keywords.join(' '),
+          keyword: currentKeywords.join(' '),
         };
         const customEvent = new CustomEvent('selectedLabel', {
           detail: {
-            inputBoxId: inputBoxId,
+            inputBoxId: input_box_id,
             labelInfo: labelInfo,
           },
         });
         document.dispatchEvent(customEvent);
-        clearSuggestBox(suggestBoxContainer);
-      });
+        clearSuggestBox();
+      }
     });
   }
 
@@ -191,34 +188,30 @@ export function keywordSuggest(
     return diseases.filter((disease) => {
       return keywords.every((keyword) => {
         const lowerKeyword = keyword.toLowerCase();
-        const idMatch =
-          disease.ID && disease.ID.toLowerCase().includes(lowerKeyword);
-        const labelMatch =
-          disease.label_ja &&
-          disease.label_ja.toLowerCase().includes(lowerKeyword);
-        const synonymMatch =
-          disease.synonym_ja &&
-          disease.synonym_ja.toLowerCase().includes(lowerKeyword);
-        return idMatch || labelMatch || synonymMatch;
+        return (
+          (disease.ID && disease.ID.toLowerCase().includes(lowerKeyword)) ||
+          (disease.label_ja &&
+            disease.label_ja.toLowerCase().includes(lowerKeyword)) ||
+          (disease.synonym_ja &&
+            disease.synonym_ja.toLowerCase().includes(lowerKeyword))
+        );
       });
     });
   }
 
-  function fetchFromAPI(api_url, searchValue, keyword_option) {
+  function fetchFromAPI(searchValue) {
     const params = new URLSearchParams({
       ...keyword_option,
       query: searchValue,
     });
     return fetch(`${api_url}?${params.toString()}`)
       .then((response) => response.json())
-      .then((data) => {
-        return data.map((disease) => ({
-          id: disease.id,
+      .then((data) =>
+        data.map((disease) => ({
+          ID: disease.id,
           label_ja: disease.label_ja,
           synonym_ja: disease.synonym_ja,
-        }));
-      });
+        }))
+      );
   }
-
-  init(); // 初期化関数を呼び出し
 }
