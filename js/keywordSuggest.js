@@ -124,36 +124,43 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   function displayResults(results, fromAPI = false) {
     let hitCount = fromAPI ? 0 : results.length;
     let suggestionsHtml = '';
+    const isEng = isEnglish(currentKeywords.join(' '));
 
     if (hitCount === 0 && includeNoMatch) {
       suggestionsHtml = `
-    <li class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
-      ' '
-    )}">
-      <span class="label-id">該当なし</span>
-      <div class="label-container">
-        <span class="main-name">${currentKeywords.join(' ')}</span>
-      </div>
-    </li>`;
+      <li class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
+        ' '
+      )}">
+        <span class="label-id">該当なし</span>
+        <div class="label-container">
+          <span class="main-name">${currentKeywords.join(' ')}</span>
+        </div>
+      </li>`;
     }
 
     suggestionsHtml += results
       .map((disease, index) => {
-        const synonyms = disease.synonym_ja
+        const synonyms = isEng
+          ? disease.synonym_en
+            ? `<span class="synonyms">| ${disease.synonym_en}</span>`
+            : ''
+          : disease.synonym_ja
           ? `<span class="synonyms">| ${disease.synonym_ja}</span>`
           : '';
         return `
-    <li class="suggestion-item ${
-      index === 0 && !suggestionsHtml ? 'selected' : ''
-    }" data-id="${disease.ID}" data-label-en="${
+      <li class="suggestion-item ${
+        index === 0 && !suggestionsHtml ? 'selected' : ''
+      }" data-id="${disease.ID}" data-label-en="${
           disease.label_en
         }" data-label-ja="${disease.label_ja}">
-      <span class="label-id">${disease.ID}</span>
-      <div class="label-container">
-        <span class="main-name">${disease.label_ja}</span>
-        ${synonyms}
-      </div>
-    </li>`;
+        <span class="label-id">${disease.ID}</span>
+        <div class="label-container">
+          <span class="main-name">${
+            isEng ? disease.label_en : disease.label_ja
+          }</span>
+          ${synonyms}
+        </div>
+      </li>`;
       })
       .join('');
 
@@ -166,9 +173,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       : `ヒット件数 [${hitCount}]`;
 
     suggestBoxContainer.innerHTML = `
-  <div class="hit-count">${hitCountText}</div>
-  ${suggestionsHtml}
-`;
+    <div class="hit-count">${hitCountText}</div>
+    ${suggestionsHtml}
+  `;
 
     suggestBoxContainer.style.display = 'block';
     inputElement.classList.add('suggest-box-open'); // Add the class when suggestion box is open
@@ -307,6 +314,17 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   }
 
   /**
+   * Check Function: Determines if the input string is in English or Japanese.
+   *
+   * @param {string} str - The string to check.
+   * @returns {boolean} - Returns true if the string is in English, false if it is in Japanese.
+   */
+  function isEnglish(str) {
+    const englishPattern = /^[A-Za-z0-9\s]+$/;
+    return englishPattern.test(str);
+  }
+
+  /**
    * Searches for keywords in the local data.
    *
    * @param {Array<Object>} diseases - The list of diseases to search in.
@@ -314,16 +332,27 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
    * @returns {Array<Object>} The list of matching diseases.
    */
   function searchInLocalData(diseases, keywords) {
+    const isEng = isEnglish(keywords.join(' '));
     return diseases.filter((disease) => {
       return keywords.every((keyword) => {
         const lowerKeyword = keyword.toLowerCase();
-        return (
-          (disease.ID && disease.ID.toLowerCase().includes(lowerKeyword)) ||
-          (disease.label_ja &&
-            disease.label_ja.toLowerCase().includes(lowerKeyword)) ||
-          (disease.synonym_ja &&
-            disease.synonym_ja.toLowerCase().includes(lowerKeyword))
-        );
+        if (isEng) {
+          return (
+            (disease.ID && disease.ID.toLowerCase().includes(lowerKeyword)) ||
+            (disease.label_en &&
+              disease.label_en.toLowerCase().includes(lowerKeyword)) ||
+            (disease.synonym_en &&
+              disease.synonym_en.toLowerCase().includes(lowerKeyword))
+          );
+        } else {
+          return (
+            (disease.ID && disease.ID.toLowerCase().includes(lowerKeyword)) ||
+            (disease.label_ja &&
+              disease.label_ja.toLowerCase().includes(lowerKeyword)) ||
+            (disease.synonym_ja &&
+              disease.synonym_ja.toLowerCase().includes(lowerKeyword))
+          );
+        }
       });
     });
   }
