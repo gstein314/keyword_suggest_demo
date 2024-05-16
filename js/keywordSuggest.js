@@ -8,6 +8,16 @@
  * @param {boolean} [options.includeNoMatch=false] - Whether to include a "No Match" option when no keywords are found (optional).
  */
 export function keywordSuggest(input_box_id, data_path, options = {}) {
+  if (!input_box_id) {
+    console.error('Error: input_box_id is required.');
+    return;
+  }
+
+  if (!data_path) {
+    console.error('Error: data_path is required.');
+    return;
+  }
+
   const { api_url = '', includeNoMatch = false } = options;
 
   let diseases = [];
@@ -404,7 +414,12 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   function fetchFromAPI(searchValue) {
     const url = `${api_url}${encodeURIComponent(searchValue)}`;
     return fetch(url)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) =>
         data.map((disease) => ({
           ID: disease.ID,
@@ -413,7 +428,11 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
           label_en: disease.label_en,
           synonym_en: disease.synonym_en,
         }))
-      );
+      )
+      .catch((error) => {
+        console.error('Error fetching from API:', error);
+        return [];
+      });
   }
 
   /**
