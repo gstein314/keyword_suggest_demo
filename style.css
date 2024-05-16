@@ -3,6 +3,7 @@
 .suggest-container {
   position: relative;
   width: 100%;
+  font-family: 'Muli', sans-serif;
 }
 
 .suggest-input {
@@ -11,6 +12,7 @@
   box-sizing: border-box;
   padding: 0 12px;
   font-size: 1rem;
+  border: 1px solid #ccc;
 }
 
 .suggest-input:focus {
@@ -19,11 +21,12 @@
 
 .suggest-box {
   position: absolute;
+  padding-left: 0;
   width: 100%;
   box-sizing: border-box;
   top: 100%;
   margin-top: -2px;
-  border: 1px solid #767676;
+  border: 1px solid #ccc;
   border-top: none;
   background-color: #fff;
   border-radius: 0 0 5px 5px;
@@ -45,8 +48,8 @@
   cursor: pointer;
   display: flex;
   gap: 5px;
-  font-family: 'Muli', sans-serif;
   font-size: 1rem;
+  line-height: 1.6;
 }
 
 .suggestion-item.selected {

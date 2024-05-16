@@ -19,6 +19,8 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     input_box_id + '_suggestBox'
   );
 
+  const lang = document.documentElement.lang; // Get the lang attribute
+
   if (!suggestBoxContainer) {
     suggestBoxContainer = createSuggestBoxContainer(inputElement);
   }
@@ -74,7 +76,6 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       .then((response) => response.text())
       .then((tsvData) => {
         diseases = parseTSVData(tsvData);
-        console.log(diseases);
       })
       .catch((error) => {
         console.error('Failed to load TSV data:', error);
@@ -89,7 +90,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
    * @returns {HTMLElement} The created suggest box container.
    */
   function createSuggestBoxContainer(inputElement) {
-    const suggestBoxContainer = document.createElement('div');
+    const suggestBoxContainer = document.createElement('ul');
     suggestBoxContainer.id = inputElement.id + '_suggestBox';
     suggestBoxContainer.classList.add('suggest-box');
     inputElement.parentNode.insertBefore(
@@ -120,14 +121,14 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
 
     if (hitCount === 0 && includeNoMatch) {
       suggestionsHtml = `
-      <div class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
+      <li class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
         ' '
       )}">
         <span class="label-id">該当なし</span>
         <div class="label-container">
           <span class="main-name">${currentKeywords.join(' ')}</span>
         </div>
-      </div>`;
+      </li>`;
     }
 
     suggestionsHtml += results
@@ -136,7 +137,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
           ? `<span class="synonyms">| ${disease.synonym_ja}</span>`
           : '';
         return `
-      <div class="suggestion-item ${
+      <li class="suggestion-item ${
         index === 0 && !suggestionsHtml ? 'selected' : ''
       }" data-id="${disease.ID}" data-label-en="${
           disease.label_en
@@ -146,12 +147,16 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
           <span class="main-name">${disease.label_ja}</span>
           ${synonyms}
         </div>
-      </div>`;
+      </li>`;
       })
       .join('');
 
     const hitCountText = fromAPI
-      ? `ヒット件数 [0] <span class="suggestion-hint">もしかして:</span>`
+      ? lang === 'en'
+        ? `Number of hits [0] <span class="suggestion-hint">By any chance:</span>`
+        : `ヒット件数 [0] <span class="suggestion-hint">もしかして:</span>`
+      : lang === 'en'
+      ? `Number of hits [${hitCount}]`
       : `ヒット件数 [${hitCount}]`;
 
     suggestBoxContainer.innerHTML = `
