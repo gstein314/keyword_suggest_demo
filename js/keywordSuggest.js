@@ -13,25 +13,21 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   let diseases = [];
   let selectedIndex = -1;
   let currentKeywords = [];
-  let originalInputValue = ''; // Store the original input value
+  let originalInputValue = '';
   let isComposing = false;
   const inputElement = document.getElementById(input_box_id);
   let suggestBoxContainer = document.getElementById(
-    input_box_id + '_suggestBox'
+    `${input_box_id}_suggestBox`
   );
 
-  const lang = document.documentElement.lang; // Get the lang attribute
+  const lang = document.documentElement.lang;
 
   if (!suggestBoxContainer) {
     suggestBoxContainer = createSuggestBoxContainer(inputElement);
   }
 
-  // Initialize the function
   init();
 
-  /**
-   * Initializes the keyword suggestion by setting up event listeners and fetching TSV data.
-   */
   function init() {
     if (!inputElement.hasAttribute('data-event-attached')) {
       addEventListeners();
@@ -40,30 +36,18 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     }
   }
 
-  /**
-   * Adds necessary event listeners to the input element.
-   */
   function addEventListeners() {
-    inputElement.addEventListener('input', debounce(inputEventListener, 300));
-    inputElement.addEventListener('keydown', keyboardNavigation);
+    inputElement.addEventListener('input', debounce(handleInput, 300));
+    inputElement.addEventListener('keydown', handleKeyboardNavigation);
     inputElement.addEventListener('compositionstart', () => {
       isComposing = true;
     });
     inputElement.addEventListener('compositionend', () => {
       isComposing = false;
     });
-
-    // Add an event listener to the document for clicks outside the suggestBox
     document.addEventListener('click', handleClickOutside);
   }
 
-  /**
-   * Debounce function to delay the execution of a function.
-   *
-   * @param {Function} func - The function to debounce.
-   * @param {number} wait - The time to wait before executing the function, in milliseconds.
-   * @returns {Function} - The debounced function.
-   */
   function debounce(func, wait) {
     let timeout;
     return function (...args) {
@@ -72,9 +56,6 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     };
   }
 
-  /**
-   * Fetches TSV data from the specified path and parses it.
-   */
   function fetchTSVData() {
     fetch(data_path)
       .then((response) => response.text())
@@ -87,73 +68,31 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       });
   }
 
-  /**
-   * Creates a container for the suggestion box.
-   *
-   * @param {HTMLElement} inputElement - The input element.
-   * @returns {HTMLElement} The created suggest box container.
-   */
   function createSuggestBoxContainer(inputElement) {
-    const suggestBoxContainer = document.createElement('ul');
-    suggestBoxContainer.id = inputElement.id + '_suggestBox';
-    suggestBoxContainer.classList.add('suggest-box');
-    inputElement.parentNode.insertBefore(
-      suggestBoxContainer,
-      inputElement.nextSibling
-    );
-    return suggestBoxContainer;
+    const container = document.createElement('ul');
+    container.id = `${inputElement.id}_suggestBox`;
+    container.classList.add('suggest-box');
+    inputElement.parentNode.insertBefore(container, inputElement.nextSibling);
+    return container;
   }
 
-  /**
-   * Clears the content of the suggestion box.
-   */
   function clearSuggestBox() {
     suggestBoxContainer.innerHTML = '';
     suggestBoxContainer.style.display = 'none';
-    inputElement.classList.remove('suggest-box-open'); // Remove the class when suggestion box is closed
-
-    // Remove the click outside event listener
+    inputElement.classList.remove('suggest-box-open');
     document.removeEventListener('click', handleClickOutside);
   }
 
-  /**
-   * Highlights the matching parts of the text, excluding those inside HTML tags.
-   *
-   * @param {string} text - The text to highlight.
-   * @param {Array<string>} keywords - The keywords to highlight.
-   * @returns {string} - The highlighted text.
-   */
-  /**
-   * Highlights the matching parts of the text, excluding those inside HTML tags.
-   *
-   * @param {string} text - The text to highlight.
-   * @param {Array<string>} keywords - The keywords to highlight.
-   * @returns {string} - The highlighted text.
-   */
-  function highlightMatch(text, keywords) {
-    const regex = new RegExp(`(${keywords.join('|')})`, 'gi');
-
-    const splitRegex = /(<[^>]+>|[^<]+)/g;
-    const parts = text.split(splitRegex);
-
-    for (let i = 0; i < parts.length; i++) {
-      if (!parts[i].startsWith('<')) {
-        parts[i] = parts[i].replace(regex, '<span class="highlight">$1</span>');
-      }
-    }
-
-    return parts.join('');
-  }
-
-  function inputEventListener(event) {
+  function handleInput(event) {
     originalInputValue = event.target.value;
-    let searchValue = normalizeString(event.target.value);
+    const searchValue = normalizeString(event.target.value);
 
     if (searchValue.trim().length < 2) {
       clearSuggestBox();
       return;
     }
 
+    currentKeywords = searchValue.split(/\s+/);
     let results = searchInLocalData(diseases, currentKeywords);
 
     if (results.length === 0 && api_url) {
@@ -169,19 +108,34 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     }
   }
 
-  /**
-   * Displays the suggestion results in the suggestion box.
-   *
-   * @param {Array<Object>} results - The list of suggested keywords.
-   * @param {boolean} fromAPI - Whether the results are from the API.
-   */
   function displayResults(results, fromAPI = false) {
     let hitCount = fromAPI ? 0 : results.length;
     let suggestionsHtml = '';
     const isEng = isEnglish(currentKeywords.join(' '));
 
     if (hitCount === 0 && includeNoMatch) {
-      suggestionsHtml = `
+      suggestionsHtml = createNoMatchSuggestion();
+    }
+
+    suggestionsHtml += results
+      .map((disease, index) =>
+        createSuggestionItem(disease, index, isEng, suggestionsHtml)
+      )
+      .join('');
+
+    const hitCountText = createHitCountText(fromAPI, hitCount);
+    suggestBoxContainer.innerHTML = `<div class="hit-count">${hitCountText}</div>${suggestionsHtml}`;
+    suggestBoxContainer.style.display = 'block';
+    inputElement.classList.add('suggest-box-open');
+    selectedIndex = results.length > 0 ? 0 : includeNoMatch ? 0 : -1;
+
+    attachListeners();
+    updateSelection(selectedIndex);
+    document.addEventListener('click', handleClickOutside);
+  }
+
+  function createNoMatchSuggestion() {
+    return `
       <li class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
         ' '
       )}">
@@ -190,24 +144,23 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
           <span class="main-name">${currentKeywords.join(' ')}</span>
         </div>
       </li>`;
-    }
+  }
 
-    suggestionsHtml += results
-      .map((disease, index) => {
-        const mainLabel = isEng ? disease.label_en : disease.label_ja;
-        const synonyms = isEng ? disease.synonym_en : disease.synonym_ja;
-        const highlightedID = highlightMatch(disease.ID, currentKeywords);
-        const highlightedLabel = highlightMatch(mainLabel, currentKeywords);
-        const highlightedSynonyms = synonyms
-          ? highlightMatch(synonyms, currentKeywords)
-          : '';
+  function createSuggestionItem(disease, index, isEng, suggestionsHtml) {
+    const mainLabel = isEng ? disease.label_en : disease.label_ja;
+    const synonyms = isEng ? disease.synonym_en : disease.synonym_ja;
+    const highlightedID = highlightMatch(disease.ID, currentKeywords);
+    const highlightedLabel = highlightMatch(mainLabel, currentKeywords);
+    const highlightedSynonyms = synonyms
+      ? highlightMatch(synonyms, currentKeywords)
+      : '';
 
-        return `
+    return `
       <li class="suggestion-item ${
         index === 0 && !suggestionsHtml ? 'selected' : ''
       }" data-id="${disease.ID}" data-label-en="${
-          disease.label_en
-        }" data-label-ja="${disease.label_ja}">
+      disease.label_en
+    }" data-label-ja="${disease.label_ja}">
         <span class="label-id">${highlightedID}</span>
         <div class="label-container">
           <span class="main-name">${highlightedLabel}</span>
@@ -218,68 +171,34 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
           }
         </div>
       </li>`;
-      })
-      .join('');
+  }
 
-    const hitCountText = fromAPI
+  function createHitCountText(fromAPI, hitCount) {
+    return fromAPI
       ? lang === 'en'
         ? `Number of hits [0] <span class="suggestion-hint">By any chance:</span>`
         : `ヒット件数 [0] <span class="suggestion-hint">もしかして:</span>`
       : lang === 'en'
       ? `Number of hits [${hitCount}]`
       : `ヒット件数 [${hitCount}]`;
-
-    suggestBoxContainer.innerHTML = `
-    <div class="hit-count">${hitCountText}</div>
-    ${suggestionsHtml}
-  `;
-
-    suggestBoxContainer.style.display = 'block';
-    inputElement.classList.add('suggest-box-open'); // Add the class when suggestion box is open
-    selectedIndex = results.length > 0 ? 0 : includeNoMatch ? 0 : -1;
-    attachListeners();
-    updateSelection(selectedIndex);
-
-    // Add the click outside event listener
-    document.addEventListener('click', handleClickOutside);
   }
 
-  /**
-   * Handles the input event for the input element.
-   *
-   * @param {Event} event - The input event.
-   */
-  function inputEventListener(event) {
-    originalInputValue = event.target.value; // Store the original input value
-    const searchValue = normalizeString(event.target.value);
-    if (searchValue.trim().length < 2) {
-      clearSuggestBox();
-      return;
-    }
+  function highlightMatch(text, keywords) {
+    const regex = new RegExp(`(${keywords.join('|')})`, 'gi');
+    const splitRegex = /(<[^>]+>|[^<]+)/g;
+    const parts = text.split(splitRegex);
 
-    currentKeywords = searchValue.split(/\s+/);
+    const highlightedParts = parts.map((part) => {
+      if (!part.startsWith('<')) {
+        return part.replace(regex, '<span class="highlight">$1</span>');
+      }
+      return part;
+    });
 
-    let results = searchInLocalData(diseases, currentKeywords);
-
-    if (results.length === 0 && api_url) {
-      fetchFromAPI(searchValue).then((apiResults) => {
-        if (apiResults.length === 0 && includeNoMatch) {
-          displayResults([], true);
-        } else {
-          displayResults(apiResults, true);
-        }
-      });
-    } else {
-      displayResults(results);
-    }
+    return highlightedParts.join('');
   }
 
-  /**
-   * Handles keyboard navigation for the suggestion items.
-   *
-   * @param {Event} event - The keyboard event.
-   */
-  function keyboardNavigation(event) {
+  function handleKeyboardNavigation(event) {
     if (isComposing) return;
 
     const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
@@ -300,11 +219,6 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     }
   }
 
-  /**
-   * Updates the selection of suggestion items.
-   *
-   * @param {number} newIndex - The new index to be selected.
-   */
   function updateSelection(newIndex) {
     const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
     selectedIndex = newIndex;
@@ -316,34 +230,27 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     });
   }
 
-  /**
-   * Attaches event listeners to the suggestion items.
-   */
   function attachListeners() {
     const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
     items.forEach((item, index) => {
-      item.removeEventListener('mouseover', hoverEventListener);
-      item.addEventListener('mouseover', hoverEventListener);
-      item.removeEventListener('click', clickEventListener);
-      item.addEventListener('click', clickEventListener);
+      item.removeEventListener('mouseover', handleHover);
+      item.addEventListener('mouseover', handleHover);
+      item.removeEventListener('click', handleClick);
+      item.addEventListener('click', handleClick);
 
-      function hoverEventListener() {
+      function handleHover() {
         updateSelection(index);
       }
-
-      function clickEventListener() {
+      function handleClick() {
         const isNoMatch = item.getAttribute('data-id') === '該当なし';
         const labelInfo = {
           ID: isNoMatch ? '' : item.getAttribute('data-id'),
           label_en: isNoMatch ? '' : item.getAttribute('data-label-en'),
           label_ja: isNoMatch ? '' : item.getAttribute('data-label-ja'),
-          keyword: originalInputValue, // Use the original input value
+          keyword: originalInputValue,
         };
         const customEvent = new CustomEvent('selectedLabel', {
-          detail: {
-            inputBoxId: input_box_id,
-            labelInfo: labelInfo,
-          },
+          detail: { inputBoxId: input_box_id, labelInfo: labelInfo },
         });
         document.dispatchEvent(customEvent);
         clearSuggestBox();
@@ -351,12 +258,6 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     });
   }
 
-  /**
-   * Parses the TSV data and returns an array of objects.
-   *
-   * @param {string} tsvData - The TSV data as a string.
-   * @returns {Array<Object>} The parsed TSV data.
-   */
   function parseTSVData(tsvData) {
     const lines = tsvData.split('\n');
     const headers = lines[0].split('\t');
@@ -370,37 +271,15 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     });
   }
 
-  /**
-   * Normalizes the input string by converting full-width characters to half-width,
-   * and making the string case-insensitive.
-   *
-   * @param {string} str - The string to normalize.
-   * @returns {string} - The normalized string.
-   */
   function normalizeString(str) {
-    return str
-      .normalize('NFKC') // Convert full-width to half-width
-      .toLowerCase(); // Convert to lower case
+    return str.normalize('NFKC').toLowerCase();
   }
 
-  /**
-   * Check Function: Determines if the input string is in English or Japanese.
-   *
-   * @param {string} str - The string to check.
-   * @returns {boolean} - Returns true if the string is in English, false if it is in Japanese.
-   */
   function isEnglish(str) {
     const englishPattern = /^[A-Za-z0-9\s]+$/;
     return englishPattern.test(normalizeString(str));
   }
 
-  /**
-   * Searches for keywords in the local data.
-   *
-   * @param {Array<Object>} diseases - The list of diseases to search in.
-   * @param {Array<string>} keywords - The list of keywords to search for.
-   * @returns {Array<Object>} The list of matching diseases.
-   */
   function searchInLocalData(diseases, keywords) {
     const isEng = isEnglish(keywords.join(' '));
     return diseases.filter((disease) => {
@@ -429,15 +308,8 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     });
   }
 
-  /**
-   * Fetches keyword suggestions from the API.
-   *
-   * @param {string} searchValue - The search value to query the API with.
-   * @returns {Promise<Array<Object>>} A promise that resolves to the list of suggested keywords.
-   */
   function fetchFromAPI(searchValue) {
     const url = `${api_url}${encodeURIComponent(searchValue)}`;
-
     return fetch(url)
       .then((response) => response.json())
       .then((data) =>
@@ -451,11 +323,6 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       );
   }
 
-  /**
-   * Handles clicks outside the suggestBox and hides it if clicked outside.
-   *
-   * @param {Event} event - The click event.
-   */
   function handleClickOutside(event) {
     if (
       suggestBoxContainer.style.display === 'block' &&
