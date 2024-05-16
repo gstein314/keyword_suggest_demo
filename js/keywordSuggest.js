@@ -28,6 +28,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
 
   init();
 
+  /**
+   * Initializes the keyword suggestion feature by attaching event listeners and fetching the TSV data.
+   */
   function init() {
     if (!inputElement.hasAttribute('data-event-attached')) {
       addEventListeners();
@@ -36,6 +39,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     }
   }
 
+  /**
+   * Adds event listeners to the input element for handling user input, keyboard navigation, and clicks outside the suggestion box.
+   */
   function addEventListeners() {
     inputElement.addEventListener('input', debounce(handleInput, 300));
     inputElement.addEventListener('keydown', handleKeyboardNavigation);
@@ -48,6 +54,12 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     document.addEventListener('click', handleClickOutside);
   }
 
+  /**
+   * Creates a debounced function that delays the execution of the input function until after a specified wait time has elapsed.
+   * @param {Function} func - The function to debounce.
+   * @param {number} wait - The number of milliseconds to delay.
+   * @returns {Function} - The debounced function.
+   */
   function debounce(func, wait) {
     let timeout;
     return function (...args) {
@@ -56,6 +68,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     };
   }
 
+  /**
+   * Fetches the TSV data from the specified path and parses it into an array of keyword objects.
+   */
   function fetchTSVData() {
     fetch(data_path)
       .then((response) => response.text())
@@ -68,6 +83,11 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       });
   }
 
+  /**
+   * Creates and returns the suggestion box container element.
+   * @param {HTMLElement} inputElement - The input element to attach the suggestion box container to.
+   * @returns {HTMLElement} - The created suggestion box container.
+   */
   function createSuggestBoxContainer(inputElement) {
     const container = document.createElement('ul');
     container.id = `${inputElement.id}_suggestBox`;
@@ -76,6 +96,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     return container;
   }
 
+  /**
+   * Clears the suggestion box and hides it.
+   */
   function clearSuggestBox() {
     suggestBoxContainer.innerHTML = '';
     suggestBoxContainer.style.display = 'none';
@@ -83,6 +106,10 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     document.removeEventListener('click', handleClickOutside);
   }
 
+  /**
+   * Handles input events from the input element, normalizes the input value, and displays keyword suggestions.
+   * @param {Event} event - The input event.
+   */
   function handleInput(event) {
     originalInputValue = event.target.value;
     const searchValue = normalizeString(event.target.value);
@@ -108,6 +135,11 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     }
   }
 
+  /**
+   * Displays keyword suggestions in the suggestion box.
+   * @param {Array} results - The list of keyword suggestions.
+   * @param {boolean} [fromAPI=false] - Whether the results are from an API call.
+   */
   function displayResults(results, fromAPI = false) {
     let hitCount = fromAPI ? 0 : results.length;
     let suggestionsHtml = '';
@@ -134,6 +166,10 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     document.addEventListener('click', handleClickOutside);
   }
 
+  /**
+   * Creates the HTML for a "No Match" suggestion item.
+   * @returns {string} - The HTML string for the "No Match" suggestion item.
+   */
   function createNoMatchSuggestion() {
     return `
       <li class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
@@ -146,6 +182,14 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       </li>`;
   }
 
+  /**
+   * Creates the HTML for a suggestion item.
+   * @param {Object} disease - The disease object containing keyword data.
+   * @param {number} index - The index of the suggestion item.
+   * @param {boolean} isEng - Whether the input language is English.
+   * @param {string} suggestionsHtml - The current HTML string for the suggestions.
+   * @returns {string} - The HTML string for the suggestion item.
+   */
   function createSuggestionItem(disease, index, isEng, suggestionsHtml) {
     const mainLabel = isEng ? disease.label_en : disease.label_ja;
     const synonyms = isEng ? disease.synonym_en : disease.synonym_ja;
@@ -173,6 +217,12 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       </li>`;
   }
 
+  /**
+   * Creates the HTML for the hit count text.
+   * @param {boolean} fromAPI - Whether the results are from an API call.
+   * @param {number} hitCount - The number of hits.
+   * @returns {string} - The HTML string for the hit count text.
+   */
   function createHitCountText(fromAPI, hitCount) {
     return fromAPI
       ? lang === 'en'
@@ -183,6 +233,12 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       : `ヒット件数 [${hitCount}]`;
   }
 
+  /**
+   * Highlights matching keywords in the text.
+   * @param {string} text - The text to highlight matches in.
+   * @param {Array} keywords - The list of keywords to highlight.
+   * @returns {string} - The text with highlighted matches.
+   */
   function highlightMatch(text, keywords) {
     const regex = new RegExp(`(${keywords.join('|')})`, 'gi');
     const splitRegex = /(<[^>]+>|[^<]+)/g;
@@ -198,6 +254,10 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     return highlightedParts.join('');
   }
 
+  /**
+   * Handles keyboard navigation within the suggestion box.
+   * @param {KeyboardEvent} event - The keyboard event.
+   */
   function handleKeyboardNavigation(event) {
     if (isComposing) return;
 
@@ -219,6 +279,10 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     }
   }
 
+  /**
+   * Updates the selected suggestion item based on the new index.
+   * @param {number} newIndex - The new index of the selected suggestion item.
+   */
   function updateSelection(newIndex) {
     const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
     selectedIndex = newIndex;
@@ -230,6 +294,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     });
   }
 
+  /**
+   * Attaches event listeners to the suggestion items for handling mouse hover and click events.
+   */
   function attachListeners() {
     const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
     items.forEach((item, index) => {
@@ -258,6 +325,11 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     });
   }
 
+  /**
+   * Parses the TSV data into an array of keyword objects.
+   * @param {string} tsvData - The TSV data string.
+   * @returns {Array} - The array of parsed keyword objects.
+   */
   function parseTSVData(tsvData) {
     const lines = tsvData.split('\n');
     const headers = lines[0].split('\t');
@@ -271,15 +343,31 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     });
   }
 
+  /**
+   * Normalizes the input string by converting it to NFKC form and lowercasing it.
+   * @param {string} str - The string to normalize.
+   * @returns {string} - The normalized string.
+   */
   function normalizeString(str) {
     return str.normalize('NFKC').toLowerCase();
   }
 
+  /**
+   * Determines whether the input string is in English.
+   * @param {string} str - The input string.
+   * @returns {boolean} - True if the input string is in English, otherwise false.
+   */
   function isEnglish(str) {
     const englishPattern = /^[A-Za-z0-9\s]+$/;
     return englishPattern.test(normalizeString(str));
   }
 
+  /**
+   * Searches for matching keywords in the local data based on the input keywords.
+   * @param {Array} diseases - The array of keyword objects.
+   * @param {Array} keywords - The array of input keywords.
+   * @returns {Array} - The array of matching keyword objects.
+   */
   function searchInLocalData(diseases, keywords) {
     const isEng = isEnglish(keywords.join(' '));
     return diseases.filter((disease) => {
@@ -308,6 +396,11 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     });
   }
 
+  /**
+   * Fetches keyword suggestions from the API based on the input value.
+   * @param {string} searchValue - The input value to search for.
+   * @returns {Promise<Array>} - A promise that resolves to an array of keyword objects.
+   */
   function fetchFromAPI(searchValue) {
     const url = `${api_url}${encodeURIComponent(searchValue)}`;
     return fetch(url)
@@ -323,6 +416,10 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       );
   }
 
+  /**
+   * Handles clicks outside the suggestion box to hide it.
+   * @param {MouseEvent} event - The click event.
+   */
   function handleClickOutside(event) {
     if (
       suggestBoxContainer.style.display === 'block' &&
