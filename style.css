@@ -52,6 +52,10 @@
   line-height: 1.6;
 }
 
+.label-container {
+  align-content: center;
+}
+
 .suggestion-item.selected {
   background-color: #34508a; /* 選択時の背景色を設定 */
   color: #212529; /* 選択時のテキスト色を調整 */
