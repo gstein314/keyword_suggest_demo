@@ -51,6 +51,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     inputElement.addEventListener('compositionend', () => {
       isComposing = false;
     });
+
+    // Add an event listener to the document for clicks outside the suggestBox
+    document.addEventListener('click', handleClickOutside);
   }
 
   /**
@@ -107,6 +110,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     suggestBoxContainer.innerHTML = '';
     suggestBoxContainer.style.display = 'none';
     inputElement.classList.remove('suggest-box-open'); // Remove the class when suggestion box is closed
+
+    // Remove the click outside event listener
+    document.removeEventListener('click', handleClickOutside);
   }
 
   /**
@@ -121,14 +127,14 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
 
     if (hitCount === 0 && includeNoMatch) {
       suggestionsHtml = `
-      <li class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
-        ' '
-      )}">
-        <span class="label-id">該当なし</span>
-        <div class="label-container">
-          <span class="main-name">${currentKeywords.join(' ')}</span>
-        </div>
-      </li>`;
+    <li class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
+      ' '
+    )}">
+      <span class="label-id">該当なし</span>
+      <div class="label-container">
+        <span class="main-name">${currentKeywords.join(' ')}</span>
+      </div>
+    </li>`;
     }
 
     suggestionsHtml += results
@@ -137,17 +143,17 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
           ? `<span class="synonyms">| ${disease.synonym_ja}</span>`
           : '';
         return `
-      <li class="suggestion-item ${
-        index === 0 && !suggestionsHtml ? 'selected' : ''
-      }" data-id="${disease.ID}" data-label-en="${
+    <li class="suggestion-item ${
+      index === 0 && !suggestionsHtml ? 'selected' : ''
+    }" data-id="${disease.ID}" data-label-en="${
           disease.label_en
         }" data-label-ja="${disease.label_ja}">
-        <span class="label-id">${disease.ID}</span>
-        <div class="label-container">
-          <span class="main-name">${disease.label_ja}</span>
-          ${synonyms}
-        </div>
-      </li>`;
+      <span class="label-id">${disease.ID}</span>
+      <div class="label-container">
+        <span class="main-name">${disease.label_ja}</span>
+        ${synonyms}
+      </div>
+    </li>`;
       })
       .join('');
 
@@ -160,15 +166,18 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       : `ヒット件数 [${hitCount}]`;
 
     suggestBoxContainer.innerHTML = `
-    <div class="hit-count">${hitCountText}</div>
-    ${suggestionsHtml}
-  `;
+  <div class="hit-count">${hitCountText}</div>
+  ${suggestionsHtml}
+`;
 
     suggestBoxContainer.style.display = 'block';
     inputElement.classList.add('suggest-box-open'); // Add the class when suggestion box is open
     selectedIndex = results.length > 0 ? 0 : includeNoMatch ? 0 : -1;
     attachListeners();
     updateSelection(selectedIndex);
+
+    // Add the click outside event listener
+    document.addEventListener('click', handleClickOutside);
   }
 
   /**
@@ -339,5 +348,20 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
           synonym_en: disease.synonym_en,
         }))
       );
+  }
+
+  /**
+   * Handles clicks outside the suggestBox and hides it if clicked outside.
+   *
+   * @param {Event} event - The click event.
+   */
+  function handleClickOutside(event) {
+    if (
+      suggestBoxContainer.style.display === 'block' &&
+      !suggestBoxContainer.contains(event.target) &&
+      !inputElement.contains(event.target)
+    ) {
+      clearSuggestBox();
+    }
   }
 }
