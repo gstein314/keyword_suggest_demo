@@ -13,6 +13,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   let diseases = [];
   let selectedIndex = -1;
   let currentKeywords = [];
+  let originalInputValue = ''; // Store the original input value
   let isComposing = false;
   const inputElement = document.getElementById(input_box_id);
   let suggestBoxContainer = document.getElementById(
@@ -193,7 +194,8 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
    * @param {Event} event - The input event.
    */
   function inputEventListener(event) {
-    const searchValue = event.target.value.toLowerCase();
+    originalInputValue = event.target.value; // Store the original input value
+    const searchValue = normalizeString(event.target.value);
     if (searchValue.length < 2) {
       clearSuggestBox();
       return;
@@ -278,9 +280,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
           ID: isNoMatch ? '' : item.getAttribute('data-id'),
           label_en: isNoMatch ? '' : item.getAttribute('data-label-en'),
           label_ja: isNoMatch ? '' : item.getAttribute('data-label-ja'),
-          keyword: isNoMatch
-            ? item.getAttribute('data-label-ja')
-            : currentKeywords.join(' '),
+          keyword: originalInputValue, // Use the original input value
         };
         const customEvent = new CustomEvent('selectedLabel', {
           detail: {
@@ -314,6 +314,19 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   }
 
   /**
+   * Normalizes the input string by converting full-width characters to half-width,
+   * and making the string case-insensitive.
+   *
+   * @param {string} str - The string to normalize.
+   * @returns {string} - The normalized string.
+   */
+  function normalizeString(str) {
+    return str
+      .normalize('NFKC') // Convert full-width to half-width
+      .toLowerCase(); // Convert to lower case
+  }
+
+  /**
    * Check Function: Determines if the input string is in English or Japanese.
    *
    * @param {string} str - The string to check.
@@ -321,7 +334,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
    */
   function isEnglish(str) {
     const englishPattern = /^[A-Za-z0-9\s]+$/;
-    return englishPattern.test(str);
+    return englishPattern.test(normalizeString(str));
   }
 
   /**
@@ -335,22 +348,24 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     const isEng = isEnglish(keywords.join(' '));
     return diseases.filter((disease) => {
       return keywords.every((keyword) => {
-        const lowerKeyword = keyword.toLowerCase();
+        const lowerKeyword = normalizeString(keyword);
         if (isEng) {
           return (
-            (disease.ID && disease.ID.toLowerCase().includes(lowerKeyword)) ||
+            (disease.ID &&
+              normalizeString(disease.ID).includes(lowerKeyword)) ||
             (disease.label_en &&
-              disease.label_en.toLowerCase().includes(lowerKeyword)) ||
+              normalizeString(disease.label_en).includes(lowerKeyword)) ||
             (disease.synonym_en &&
-              disease.synonym_en.toLowerCase().includes(lowerKeyword))
+              normalizeString(disease.synonym_en).includes(lowerKeyword))
           );
         } else {
           return (
-            (disease.ID && disease.ID.toLowerCase().includes(lowerKeyword)) ||
+            (disease.ID &&
+              normalizeString(disease.ID).includes(lowerKeyword)) ||
             (disease.label_ja &&
-              disease.label_ja.toLowerCase().includes(lowerKeyword)) ||
+              normalizeString(disease.label_ja).includes(lowerKeyword)) ||
             (disease.synonym_ja &&
-              disease.synonym_ja.toLowerCase().includes(lowerKeyword))
+              normalizeString(disease.synonym_ja).includes(lowerKeyword))
           );
         }
       });
