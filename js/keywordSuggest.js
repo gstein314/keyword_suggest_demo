@@ -117,6 +117,59 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   }
 
   /**
+   * Highlights the matching parts of the text, excluding those inside HTML tags.
+   *
+   * @param {string} text - The text to highlight.
+   * @param {Array<string>} keywords - The keywords to highlight.
+   * @returns {string} - The highlighted text.
+   */
+  /**
+   * Highlights the matching parts of the text, excluding those inside HTML tags.
+   *
+   * @param {string} text - The text to highlight.
+   * @param {Array<string>} keywords - The keywords to highlight.
+   * @returns {string} - The highlighted text.
+   */
+  function highlightMatch(text, keywords) {
+    const regex = new RegExp(`(${keywords.join('|')})`, 'gi');
+
+    const splitRegex = /(<[^>]+>|[^<]+)/g;
+    const parts = text.split(splitRegex);
+
+    for (let i = 0; i < parts.length; i++) {
+      if (!parts[i].startsWith('<')) {
+        parts[i] = parts[i].replace(regex, '<span class="highlight">$1</span>');
+      }
+    }
+
+    return parts.join('');
+  }
+
+  function inputEventListener(event) {
+    originalInputValue = event.target.value;
+    let searchValue = normalizeString(event.target.value);
+
+    if (searchValue.trim().length < 2) {
+      clearSuggestBox();
+      return;
+    }
+
+    let results = searchInLocalData(diseases, currentKeywords);
+
+    if (results.length === 0 && api_url) {
+      fetchFromAPI(searchValue).then((apiResults) => {
+        if (apiResults.length === 0 && includeNoMatch) {
+          displayResults([], true);
+        } else {
+          displayResults(apiResults, true);
+        }
+      });
+    } else {
+      displayResults(results);
+    }
+  }
+
+  /**
    * Displays the suggestion results in the suggestion box.
    *
    * @param {Array<Object>} results - The list of suggested keywords.
@@ -141,25 +194,28 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
 
     suggestionsHtml += results
       .map((disease, index) => {
-        const synonyms = isEng
-          ? disease.synonym_en
-            ? `<span class="synonyms">| ${disease.synonym_en}</span>`
-            : ''
-          : disease.synonym_ja
-          ? `<span class="synonyms">| ${disease.synonym_ja}</span>`
+        const mainLabel = isEng ? disease.label_en : disease.label_ja;
+        const synonyms = isEng ? disease.synonym_en : disease.synonym_ja;
+        const highlightedID = highlightMatch(disease.ID, currentKeywords);
+        const highlightedLabel = highlightMatch(mainLabel, currentKeywords);
+        const highlightedSynonyms = synonyms
+          ? highlightMatch(synonyms, currentKeywords)
           : '';
+
         return `
       <li class="suggestion-item ${
         index === 0 && !suggestionsHtml ? 'selected' : ''
       }" data-id="${disease.ID}" data-label-en="${
           disease.label_en
         }" data-label-ja="${disease.label_ja}">
-        <span class="label-id">${disease.ID}</span>
+        <span class="label-id">${highlightedID}</span>
         <div class="label-container">
-          <span class="main-name">${
-            isEng ? disease.label_en : disease.label_ja
-          }</span>
-          ${synonyms}
+          <span class="main-name">${highlightedLabel}</span>
+          ${
+            highlightedSynonyms
+              ? `<span class="synonyms">| ${highlightedSynonyms}</span>`
+              : ''
+          }
         </div>
       </li>`;
       })
@@ -196,12 +252,13 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   function inputEventListener(event) {
     originalInputValue = event.target.value; // Store the original input value
     const searchValue = normalizeString(event.target.value);
-    if (searchValue.length < 2) {
+    if (searchValue.trim().length < 2) {
       clearSuggestBox();
       return;
     }
 
     currentKeywords = searchValue.split(/\s+/);
+
     let results = searchInLocalData(diseases, currentKeywords);
 
     if (results.length === 0 && api_url) {
