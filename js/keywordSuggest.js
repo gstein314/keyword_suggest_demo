@@ -74,6 +74,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       .then((response) => response.text())
       .then((tsvData) => {
         diseases = parseTSVData(tsvData);
+        console.log(diseases);
       })
       .catch((error) => {
         console.error('Failed to load TSV data:', error);
@@ -104,6 +105,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   function clearSuggestBox() {
     suggestBoxContainer.innerHTML = '';
     suggestBoxContainer.style.display = 'none';
+    inputElement.classList.remove('suggest-box-open'); // Remove the class when suggestion box is closed
   }
 
   /**
@@ -158,6 +160,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   `;
 
     suggestBoxContainer.style.display = 'block';
+    inputElement.classList.add('suggest-box-open'); // Add the class when suggestion box is open
     selectedIndex = results.length > 0 ? 0 : includeNoMatch ? 0 : -1;
     attachListeners();
     updateSelection(selectedIndex);

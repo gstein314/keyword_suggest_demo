@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputBox3 = document.getElementById('inputBox3');
 
   inputBox1.addEventListener('input', () => {
-    keywordSuggest('inputBox1', '../tsv/nando_sample.tsv', {
+    keywordSuggest('inputBox1', '../tsv/NANDO.tsv', {
       api_url: 'http://localhost:5555/moshikashite_test_api?text=',
-      includeNoMatch: true,
     });
   });
 
   inputBox2.addEventListener('input', () => {
     keywordSuggest('inputBox2', '../tsv/mondo_sample.tsv', {
+      api_url: 'http://localhost:5555/moshikashite_test_api?text=',
       includeNoMatch: true,
     });
   });
