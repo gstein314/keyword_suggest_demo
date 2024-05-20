@@ -20,6 +20,7 @@
 }
 
 .suggest-box {
+  display: none;
   position: absolute;
   padding-left: 0;
   width: 100%;
@@ -59,15 +60,18 @@
 .suggestion-item.-selected {
   background-color: #34508a;
   color: #212529;
-  .label-id {
-    color: #fff;
-  }
-  .main-name {
-    color: #f2d2d7;
-  }
-  .synonyms {
-    color: #fff;
-  }
+}
+
+.suggestion-item.-selected .label-id {
+  color: #fff;
+}
+
+.suggestion-item.-selected .main-name {
+  color: #f2d2d7;
+}
+
+.suggestion-item.-selected .synonyms {
+  color: #fff;
 }
 
 .suggestion-item.-keyword {
