@@ -1,8 +1,8 @@
 ID	label_en	synonym_en	label_ja	synonym_ja
 NANDO:1200040	[指定] Autosomal dominant hereditary spinocerebellar degeneration		[指定] 常染色体優性遺伝性脊髄小脳変性症	
-NANDO:1200041	[指定] Spinocerebellar ataxia type 3	Machado-Joseph disease|MJD|SCA3	[指定] 脊髄小脳失調症３型	マチャド・ジョセフ病
+NANDO:1200041	[指定] Spinocerebellar ataxia type 3	Machado-Joseph disease | MJD | SCA3	[指定] 脊髄小脳失調症３型	マチャド・ジョセフ病
 NANDO:1200042	[指定] Spinocerebellar ataxia type 6	SCA6	[指定] 脊髄小脳失調症６型	
-NANDO:1200043	[指定] Dentatorubropallidoluysian atrophy	Dentatorubral-pallidoluysian atrophy|DRPLA	[指定] 歯状核赤核淡蒼球ルイ体萎縮症	
+NANDO:1200043	[指定] Dentatorubropallidoluysian atrophy	Dentatorubral-pallidoluysian atrophy | DRPLA	[指定] 歯状核赤核淡蒼球ルイ体萎縮症	
 NANDO:1200044	[指定] Spinocerebellar ataxia type 31	SCA31	[指定] 脊髄小脳失調症３１型	
 NANDO:1200045	[指定] Spinocerebellar ataxia type 1	SCA1	[指定] 脊髄小脳失調症１型	
 NANDO:1200046	[指定] Spinocerebellar ataxia type 2	SCA2	[指定] 脊髄小脳失調症２型	
@@ -10,7 +10,7 @@ NANDO:1200047	[指定] Spinocerebellar ataxia type 7	SCA7	[指定] 脊髄小脳�
 NANDO:1200048	[指定] Spinocerebellar ataxia type 36	SCA36	[指定] 脊髄小脳失調症３６型	
 NANDO:1200049	[指定] Autosomal recessive hereditary spinocerebellar degeneration		[指定] 常染色体劣性遺伝性脊髄小脳変性症	
 NANDO:1200050	[指定] Ataxia with isolated vitamin E deficiency	AVED	[指定] ビタミンE単独欠乏性失調症	
-NANDO:1200051	[指定] Ataxia-oculomotor apraxia type 1	AOA1|Early-onset ataxia with ocular motor apraxia and hypoalbuminemia|EAOH	[指定] アプラタキシン欠損症	眼球運動失行を伴う失調症|低アルブミン血症を伴う早発型脊髄小脳変性症
+NANDO:1200051	[指定] Ataxia-oculomotor apraxia type 1	AOA1 | Early-onset ataxia with ocular motor apraxia and hypoalbuminemia | EAOH	[指定] アプラタキシン欠損症	眼球運動失行を伴う失調症 | 低アルブミン血症を伴う早発型脊髄小脳変性症
 NANDO:2200703	[小慢] Other combined immunodeficiencies	Combined immunodeficiencies	[小慢] 1から9までに掲げるもののほか、複合免疫不全症	
 NANDO:2200704	[小慢] Wiskott-Aldrich syndrome		[小慢] ウィスコット・オルドリッチ症候群	Wiskott-Aldrich症候群
 NANDO:2200705	[小慢] Ataxia telangiectasia		[小慢] 毛細血管拡張性運動失調症	

@@ -52,6 +52,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
   /**
    * Adds event listeners to the input element for handling user input, keyboard navigation, and clicks outside the suggestion box.
    */
+  /**
+   * Adds event listeners to the input element for handling user input, keyboard navigation, and clicks outside the suggestion box.
+   */
   function addEventListeners() {
     inputElement.addEventListener('input', debounce(handleInput, 300));
     inputElement.addEventListener('keydown', handleKeyboardNavigation);
@@ -61,7 +64,17 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     inputElement.addEventListener('compositionend', () => {
       isComposing = false;
     });
+    inputElement.addEventListener('focus', handleFocus);
     document.addEventListener('click', handleClickOutside);
+  }
+
+  /**
+   * Handles focus events on the input element to re-trigger the search if the input is not empty.
+   */
+  function handleFocus(event) {
+    if (event.target.value.trim().length > 0) {
+      handleInput(event);
+    }
   }
 
   /**
