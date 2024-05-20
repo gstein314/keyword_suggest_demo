@@ -295,13 +295,27 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
    * @returns {string} - The text with highlighted matches.
    */
   function highlightMatch(text, keywords) {
-    const regex = new RegExp(`(${keywords.join('|')})`, 'gi');
+    const allWidthKeywords = keywords.flatMap((keyword) => {
+      const fullwidthKeyword = keyword.replace(/[0-9]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) + 0xfee0);
+      });
+      return [keyword, fullwidthKeyword];
+    });
+
+    const allWidthRegex = new RegExp(
+      `(${allWidthKeywords
+        .map((keyword) => keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'))
+        .join('|')})`,
+      'gi'
+    );
+
     const splitRegex = /(<[^>]+>|[^<]+)/g;
     const parts = text.split(splitRegex);
 
     const highlightedParts = parts.map((part) => {
       if (!part.startsWith('<')) {
-        return part.replace(regex, '<span class="highlight">$1</span>');
+        part = part.replace(allWidthRegex, '<span class="highlight">$&</span>');
+        return part;
       }
       return part;
     });
