@@ -182,10 +182,9 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
    */
   function createNoMatchSuggestion() {
     return `
-      <li class="suggestion-item" data-id="該当なし" data-label-en="" data-label-ja="${currentKeywords.join(
+      <li class="suggestion-item" data-id="noMatch" data-label-en="" data-label-ja="${currentKeywords.join(
         ' '
       )}">
-        <span class="label-id">該当なし</span>
         <div class="label-container">
           <span class="main-name">${currentKeywords.join(' ')}</span>
         </div>
@@ -319,7 +318,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
         updateSelection(index);
       }
       function handleClick() {
-        const isNoMatch = item.getAttribute('data-id') === '該当なし';
+        const isNoMatch = item.getAttribute('data-id') === 'noMatch';
         const labelInfo = {
           ID: isNoMatch ? '' : item.getAttribute('data-id'),
           label_en: isNoMatch ? '' : item.getAttribute('data-label-en'),
