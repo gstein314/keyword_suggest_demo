@@ -155,9 +155,13 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     let suggestionsHtml = '';
     const isEng = isEnglish(currentKeywords.join(' '));
 
-    if (hitCount === 0 && includeNoMatch) {
-      suggestionsHtml = createNoMatchSuggestion();
+    if (includeNoMatch) {
+      suggestionsHtml += createKeywordSuggestion();
     }
+
+    const hitCountText = createHitCountText(fromAPI, hitCount);
+
+    suggestionsHtml += `<div class="hit-count">${hitCountText}</div>`;
 
     suggestionsHtml += results
       .map((disease, index) =>
@@ -165,8 +169,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
       )
       .join('');
 
-    const hitCountText = createHitCountText(fromAPI, hitCount);
-    suggestBoxContainer.innerHTML = `<div class="hit-count">${hitCountText}</div>${suggestionsHtml}`;
+    suggestBoxContainer.innerHTML = suggestionsHtml;
     suggestBoxContainer.style.display = 'block';
     inputElement.classList.add('suggest-box-open');
     selectedIndex = results.length > 0 ? 0 : includeNoMatch ? 0 : -1;
@@ -174,6 +177,36 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     attachListeners();
     updateSelection(selectedIndex);
     document.addEventListener('click', handleClickOutside);
+  }
+
+  /**
+   * Creates the HTML for a keyword suggestion item.
+   * @returns {string} - The HTML string for the keyword suggestion item.
+   */
+  function createKeywordSuggestion() {
+    return `
+      <li class="suggestion-item keyword" data-id="noMatch" data-label-en="" data-label-ja="${currentKeywords.join(
+        ' '
+      )}">
+        <div class="label-container">
+          <span class="main-name">${currentKeywords.join(' ')}</span>
+        </div>
+      </li>`;
+  }
+
+  /**
+   * Creates the HTML for a keyword suggestion item.
+   * @returns {string} - The HTML string for the keyword suggestion item.
+   */
+  function createKeywordSuggestion() {
+    return `
+      <li class="suggestion-item -keyword" data-id="noMatch" data-label-en="" data-label-ja="${currentKeywords.join(
+        ' '
+      )}">
+        <div class="label-container">
+          <span class="main-name">${currentKeywords.join(' ')}</span>
+        </div>
+      </li>`;
   }
 
   /**
@@ -210,7 +243,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
 
     return `
       <li class="suggestion-item ${
-        index === 0 && !suggestionsHtml ? 'selected' : ''
+        index === 0 && !suggestionsHtml ? '-selected' : ''
       }" data-id="${disease.ID}" data-label-en="${
       disease.label_en
     }" data-label-ja="${disease.label_ja}">
@@ -296,7 +329,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
     const items = suggestBoxContainer.querySelectorAll('.suggestion-item');
     selectedIndex = newIndex;
     items.forEach((item, index) => {
-      item.classList.toggle('selected', index === selectedIndex);
+      item.classList.toggle('-selected', index === selectedIndex);
       if (index === selectedIndex) {
         item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }

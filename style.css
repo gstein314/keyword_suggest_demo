@@ -56,9 +56,9 @@
   align-content: center;
 }
 
-.suggestion-item.selected {
-  background-color: #34508a; /* 選択時の背景色を設定 */
-  color: #212529; /* 選択時のテキスト色を調整 */
+.suggestion-item.-selected {
+  background-color: #34508a;
+  color: #212529;
   .label-id {
     color: #fff;
   }
@@ -68,6 +68,10 @@
   .synonyms {
     color: #fff;
   }
+}
+
+.suggestion-item.-keyword {
+  margin-bottom: 10px;
 }
 
 .main-name {
