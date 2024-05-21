@@ -138,18 +138,18 @@ includeNoMatch (boolean): キーワード自体の選択欄をサジェストボ
 
 #### 使用例
 
-以下のように、keywordSuggest 関数を呼び出して使用します。
+以下のように、smartTextBox 関数を呼び出して使用します。
 
 1. ローカルデータだけ使用する場合
 
 ```javascript
-keywordSuggest('inputBoxID', 'path/to/keywords.tsv');
+smartTextBox('inputBoxID', 'path/to/keywords.tsv');
 ```
 
 2. もしかして検索を使用（ローカルデータがヒットしないとき）する場合
 
 ```javascript
-keywordSuggest('inputBoxID', 'path/to/keywords.tsv', {
+smartTextBox('inputBoxID', 'path/to/keywords.tsv', {
   api_url: 'https://api.example.com/keywords',
 });
 ```
@@ -157,7 +157,7 @@ keywordSuggest('inputBoxID', 'path/to/keywords.tsv', {
 3. キーワード自体の選択欄を表示する場合
 
 ```javascript
-keywordSuggest('inputBoxID', 'path/to/keywords.tsv', {
+smartTextBox('inputBoxID', 'path/to/keywords.tsv', {
   includeNoMatch: true,
 });
 ```
@@ -165,7 +165,7 @@ keywordSuggest('inputBoxID', 'path/to/keywords.tsv', {
 4. もしかして検索とキーワード自体の選択欄を表示する場合
 
 ```javascript
-keywordSuggest('inputBoxID', 'path/to/keywords.tsv', {
+smartTextBox('inputBoxID', 'path/to/keywords.tsv', {
   api_url: 'https://api.example.com/keywords',
   includeNoMatch: true,
 });
