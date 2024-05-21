@@ -8,6 +8,12 @@
 
 1. デモを起動するために必要なファイルは demo フォルダに揃っています。main.js で smartTextBox 関数を呼び出し、Input 要素の ID、TSV ファイルのパス、オプションを設定しています。（確認するだけであれば、デモ用のファイルをそのまま使用してください。）
 
+以下のコマンドをターミナルで入力して移動してください。
+
+```sh
+cd smart_text_box
+```
+
 #### smartTextBox の引数
 
 - `input_box_id`: 入力ボックス要素の ID。必須です。
@@ -27,7 +33,7 @@ npm install express
 ```
 
 ```sh
-node server.js
+node demo/js/server.js
 ```
 
 3. VSCode の拡張機能である Live Server を起動してください。その後、http://127.0.0.1:5501/demo/ を開いてください。
