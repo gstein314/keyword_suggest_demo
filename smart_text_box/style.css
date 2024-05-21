@@ -2,6 +2,7 @@
   position: relative;
   width: 100%;
   font-family: "Muli", sans-serif;
+  text-align: left;
 }
 .smart-text-box-container > .smart-text-box-input {
   width: 100%;
@@ -71,6 +72,9 @@
   color: #3777b5;
 }
 .smart-text-box-container > .suggest-box > .suggestion-item > .label-container > .synonyms {
+  color: #000;
+}
+.smart-text-box-container > .suggest-box > .suggestion-item > .label-id {
   color: #000;
 }
 .smart-text-box-container > .suggest-box > .suggestion-item .highlight {

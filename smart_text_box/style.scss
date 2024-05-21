@@ -2,6 +2,7 @@
   position: relative;
   width: 100%;
   font-family: 'Muli', sans-serif;
+  text-align: left;
 
   > .smart-text-box-input {
     width: 100%;
@@ -85,6 +86,10 @@
         > .synonyms {
           color: #000;
         }
+      }
+
+      > .label-id {
+        color: #000;
       }
 
       .highlight {
