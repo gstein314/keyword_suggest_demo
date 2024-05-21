@@ -9,12 +9,12 @@
  */
 export function smartTextBox(input_box_id, data_path, options = {}) {
   if (!input_box_id) {
-    console.error('Error: input_box_id is required.');
+    console.error('Error in smartTextBox: Input box id is required.');
     return;
   }
 
   if (!data_path) {
-    console.error('Error: data_path is required.');
+    console.error('Error in smartTextBox: TSV file path is required.');
     return;
   }
 
