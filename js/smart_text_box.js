@@ -249,12 +249,12 @@ export function smartTextBox(input_box_id, data_path, options = {}) {
    */
   function createHitCountText(fromAPI, hitCount) {
     return fromAPI
-      ? lang === 'en'
-        ? `Number of hits [0] <span class="suggestion-hint">By any chance:</span>`
-        : `ヒット件数 [0] <span class="suggestion-hint">もしかして:</span>`
-      : lang === 'en'
-      ? `Number of hits [${hitCount}]`
-      : `ヒット件数 [${hitCount}]`;
+      ? lang === 'ja'
+        ? `ヒット件数 [0] <span class="suggestion-hint">もしかして:</span>`
+        : `Number of hits [0] <span class="suggestion-hint">By any chance:</span>`
+      : lang === 'ja'
+      ? `ヒット件数 [${hitCount}]`
+      : `Number of hits [${hitCount}]`;
   }
 
   /**
