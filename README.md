@@ -4,7 +4,7 @@
 
 ### 起動手順
 
-1. main.js で smartTextBox 関数を呼び出し、以下の引数を指定してください。
+1. main.js で smartTextBox 関数を呼び出し、以下の引数を指定してください。（確認するだけであれば、デモ用のファイルをそのまま使用してください。）
 
 ```javascript
 input_box_id - 入力ボックス要素のID。必須です。
