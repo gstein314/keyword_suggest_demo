@@ -73,9 +73,9 @@ smartTextBox('inputBoxID', 'path/to/keywords.tsv');
 // カスタムイベントのリスナー（インプットボックスのIDと選択したラベル情報のオブジェクトを取得し、Consoleに表示する例）
 document.addEventListener('selectedLabel', function (event) {
   const selectedInputBox = event.detail.inputBoxId;
-  const selectedObject = event.detail.labelInfo;
+  const selectedItem = event.detail.labelInfo;
   console.log(selectedInputBox);
-  console.log(selectedObject);
+  console.log(selectedItem);
 });
 ```
 
