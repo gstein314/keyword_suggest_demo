@@ -1,12 +1,9 @@
-/* style.css */
-
 .smart-text-box-container {
   position: relative;
   width: 100%;
   font-family: 'Muli', sans-serif;
 }
-
-.smart-text-box-input {
+.smart-text-box-container > .smart-text-box-input {
   width: 100%;
   height: 32px;
   box-sizing: border-box;
@@ -14,12 +11,10 @@
   font-size: 1rem;
   border: 1px solid #ccc;
 }
-
-.smart-text-box-input:focus {
+.smart-text-box-container > .smart-text-box-input:focus {
   outline: none;
 }
-
-.suggest-box {
+.smart-text-box-container > .suggest-box {
   display: none;
   position: absolute;
   padding-left: 0;
@@ -36,15 +31,16 @@
   max-height: 90vh;
   overflow: auto;
 }
-
-.hit-count {
+.smart-text-box-container > .suggest-box > .hit-count {
   padding: 6px 12px;
   font-size: 0.8rem;
   font-weight: bold;
   color: #757575;
 }
-
-.suggestion-item {
+.smart-text-box-container > .suggest-box > .hit-count > .suggestion-hint {
+  color: #f8516d;
+}
+.smart-text-box-container > .suggest-box > .suggestion-item {
   padding: 6px 12px;
   cursor: pointer;
   display: flex;
@@ -52,44 +48,50 @@
   font-size: 1rem;
   line-height: 1.6;
 }
-
-.label-container {
-  align-content: center;
-}
-
-.suggestion-item.-selected {
+.smart-text-box-container > .suggest-box > .suggestion-item.-selected {
   background-color: #34508a;
   color: #212529;
 }
-
-.suggestion-item.-selected .label-id {
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item.-selected
+  > .label-id {
   color: #fff;
 }
-
-.suggestion-item.-selected .main-name {
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item.-selected
+  > .label-container
+  > .main-name {
   color: #f2d2d7;
 }
-
-.suggestion-item.-selected .synonyms {
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item.-selected
+  > .label-container
+  > .synonyms {
   color: #fff;
 }
-
-.suggestion-item.-keyword {
+.smart-text-box-container > .suggest-box > .suggestion-item.-keyword {
   margin-bottom: 10px;
 }
-
-.main-name {
+.smart-text-box-container > .suggest-box > .suggestion-item > .label-container {
+  align-content: center;
+}
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item
+  > .label-container
+  > .main-name {
   color: #3777b5;
 }
-
-.synonyms {
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item
+  > .label-container
+  > .synonyms {
   color: #000;
 }
-
-.suggestion-hint {
-  color: #f8516d;
-}
-
-.highlight {
+.smart-text-box-container > .suggest-box > .suggestion-item .highlight {
   font-weight: bold;
 }

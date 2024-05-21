@@ -36,7 +36,7 @@ node server.js
 
 ### HTML
 
-html ファイルに以下のようなコードを記述し、input 要素は div 要素（class="suggest-container"）で囲むようにしてください。また、id は任意のものを指定してください。
+html ファイルに以下のようなコードを記述し、input 要素は div 要素（class="smart-text-box-container"）で囲むようにしてください。また、id は任意のものを指定してください。
 
 ```html
 <div class="smart-text-box-container">
@@ -52,11 +52,12 @@ html ファイルに以下のようなコードを記述し、input 要素は di
 
 ### CSS
 
-style.css に含まれるコードをコピーしてご利用の CSS ファイルに追加してください。
-
-smart_text_box.js ファイルをコピーして追加してください。利用したい js ファイルで以下のように呼び出してください。
+style.css に含まれるコードをコピーしてご利用のプロジェクトの CSS ファイルに追加してください。
+css は scss で管理しています。Smart Text Box 共通部分に関わる修正をする場合は scss 自体を変更・更新してください。
 
 ### JavaScript
+
+smart_text_box.js ファイルをコピーして追加してください。利用したい js ファイルで以下のように呼び出してください。
 
 ```javascript
 // smart_text_box.js のインポート
@@ -65,7 +66,7 @@ import { smartTextBox } from './smart_text_box.js';
 // 関数の呼び出し
 smartTextBox('inputBoxID', 'path/to/keywords.tsv');
 
-// カスタムイベントのリスナー（インプットボックスのIDと選択したラベル情報のオブジェクトを取得する例）
+// カスタムイベントのリスナー（インプットボックスのIDと選択したラベル情報のオブジェクトを取得し、Consoleに表示する例）
 document.addEventListener('selectedLabel', function (event) {
   const selectedInputBox = event.detail.inputBoxId;
   const selectedObject = event.detail.labelInfo;
