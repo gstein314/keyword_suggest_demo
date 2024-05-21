@@ -1,0 +1,15 @@
+{
+  "name": "smart_text_box",
+  "version": "1.0.0",
+  "description": "Smart Text Box",
+  "main": "smart_text_box.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

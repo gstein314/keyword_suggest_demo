@@ -25,11 +25,7 @@ cd smart_text_box
 2. もしかして検索をローカルで試したい場合は、API サーバーを起動してください。デモ用に作成した（server.js）は Node.js と Express を使用しています。簡易的な API であるため、実際のプロジェクトで使用する場合は適切な API を用意してください。
 
 ```sh
-npm init -y
-```
-
-```sh
-npm install express
+npm install
 ```
 
 ```sh
