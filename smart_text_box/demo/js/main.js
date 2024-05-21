@@ -1,4 +1,4 @@
-import { smartTextBox } from './smart_text_box.js';
+import { smartTextBox } from '../../smart_text_box.js';
 
 // API（もしかして検索）あり、キーワード選択欄なし
 smartTextBox('NANDO', './tsv/NANDO_sample.tsv', {
