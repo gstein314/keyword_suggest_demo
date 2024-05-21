@@ -1,7 +1,7 @@
 .smart-text-box-container {
   position: relative;
   width: 100%;
-  font-family: "Muli", sans-serif;
+  font-family: 'Muli', sans-serif;
 }
 .smart-text-box-container > .smart-text-box-input {
   width: 100%;
@@ -52,13 +52,24 @@
   background-color: #34508a;
   color: #212529;
 }
-.smart-text-box-container > .suggest-box > .suggestion-item.-selected > .label-id {
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item.-selected
+  > .label-id {
   color: #fff;
 }
-.smart-text-box-container > .suggest-box > .suggestion-item.-selected > .label-container > .main-name {
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item.-selected
+  > .label-container
+  > .main-name {
   color: #f2d2d7;
 }
-.smart-text-box-container > .suggest-box > .suggestion-item.-selected > .label-container > .synonyms {
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item.-selected
+  > .label-container
+  > .synonyms {
   color: #fff;
 }
 .smart-text-box-container > .suggest-box > .suggestion-item.-keyword {
@@ -67,12 +78,20 @@
 .smart-text-box-container > .suggest-box > .suggestion-item > .label-container {
   align-content: center;
 }
-.smart-text-box-container > .suggest-box > .suggestion-item > .label-container > .main-name {
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item
+  > .label-container
+  > .main-name {
   color: #3777b5;
 }
-.smart-text-box-container > .suggest-box > .suggestion-item > .label-container > .synonyms {
+.smart-text-box-container
+  > .suggest-box
+  > .suggestion-item
+  > .label-container
+  > .synonyms {
   color: #000;
 }
 .smart-text-box-container > .suggest-box > .suggestion-item .highlight {
   font-weight: bold;
-}/*# sourceMappingURL=style.css.map */
+}
