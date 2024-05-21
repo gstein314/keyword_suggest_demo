@@ -32,7 +32,7 @@ npm install
 node demo/js/server.js
 ```
 
-3. VSCode の拡張機能である Live Server を起動してください。その後、http://127.0.0.1:5501/demo/ を開いてください。
+3. VSCode の拡張機能である Live Server を起動してください。その後、http://127.0.0.1:5500/smart_text_box/demo/ を開いてください。
 
 ## 他プロジェクトでの使い方
 
