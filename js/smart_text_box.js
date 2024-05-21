@@ -5,7 +5,7 @@
  * @param {string} data_path - The path to the TSV file containing keyword data.
  * @param {Object} [options={}] - An options object to specify additional settings.
  * @param {string} [options.api_url=''] - The URL of the API to fetch additional keyword suggestions (optional).
- * @param {boolean} [options.includeNoMatch=false] - Whether to include a field to select the keyword itself if the keyword is not found (optional).
+ * @param {boolean} [options.includeNoMatch=false] - Whether to include a selection field for the keyword itself in the suggestion box (optional).
  */
 export function smartTextBox(input_box_id, data_path, options = {}) {
   if (!input_box_id) {

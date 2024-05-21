@@ -30,7 +30,7 @@ node server.js
 
 3. VSCode の拡張機能である Live Server で確認してください。
 
-## 使い方
+## 他プロジェクトでの使い方
 
 最小限の構成として、デモファイルのような html ファイル、css ファイル、js ファイル、tsv ファイルを用意してください。（server.js はデモ用なのでなくても問題ありません。）
 
@@ -57,7 +57,7 @@ css は scss で管理しています。Smart Text Box 共通部分に関わる�
 
 ### JavaScript
 
-smart_text_box.js ファイルをコピーして追加してください。利用したい js ファイルで以下のように呼び出してください。
+smart_text_box.js ファイルをコピーして追加してください。利用したい js ファイルで以下のように呼び出してください。パスは適宜変更してください。
 
 ```javascript
 // smart_text_box.js のインポート
@@ -100,7 +100,7 @@ input_box_id (string): 入力ボックスの要素 ID。
 data_path (string): キーワードデータを含む TSV ファイルのパス。
 options (object, 任意):
 api_url (string): 追加のキーワード候補を取得するための API の URL。
-includeNoMatch (boolean): キーワードが見つからない場合にキーワード自体の選択欄を含めるかどうか。
+includeNoMatch (boolean): キーワード自体の選択欄をサジェストボックスに含めるかどうか。
 
 ##### 機能
 
