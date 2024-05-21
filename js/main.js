@@ -1,18 +1,18 @@
-import { keywordSuggest } from './keywordSuggest.js';
+import { smartTextBox } from './smart_text_box.js';
 
 // API（もしかして検索）あり、キーワード選択欄なし
-keywordSuggest('NANDO', '../tsv/NANDO_sample.tsv', {
+smartTextBox('NANDO', '../tsv/NANDO_sample.tsv', {
   api_url: 'http://localhost:5555/moshikashite_test_api?text=',
 });
 
 // API（もしかして検索）あり、キーワード選択欄あり
-keywordSuggest('MONDO', '../tsv/mondo_sample.tsv', {
+smartTextBox('MONDO', '../tsv/mondo_sample.tsv', {
   api_url: 'http://localhost:5555/moshikashite_test_api?text=',
   includeNoMatch: true,
 });
 
 // API（もしかして検索）なし、キーワード選択欄なし
-keywordSuggest('ICD10', '../tsv/icd10_sample.tsv');
+smartTextBox('ICD10', '../tsv/icd10_sample.tsv');
 
 document.addEventListener('selectedLabel', function (event) {
   const inputBoxId = event.detail.inputBoxId;

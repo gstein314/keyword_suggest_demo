@@ -5,9 +5,9 @@
  * @param {string} data_path - The path to the TSV file containing keyword data.
  * @param {Object} [options={}] - An options object to specify additional settings.
  * @param {string} [options.api_url=''] - The URL of the API to fetch additional keyword suggestions (optional).
- * @param {boolean} [options.includeNoMatch=false] - Whether to include a "No Match" option when no keywords are found (optional).
+ * @param {boolean} [options.includeNoMatch=false] - Whether to include a field to select the keyword itself if the keyword is not found (optional).
  */
-export function keywordSuggest(input_box_id, data_path, options = {}) {
+export function smartTextBox(input_box_id, data_path, options = {}) {
   if (!input_box_id) {
     console.error('Error: input_box_id is required.');
     return;
@@ -113,7 +113,6 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
    */
   function createSuggestBoxContainer(inputElement) {
     const container = document.createElement('ul');
-    container.id = `${inputElement.id}_suggestBox`;
     container.classList.add('suggest-box');
     inputElement.parentNode.insertBefore(container, inputElement.nextSibling);
     return container;
@@ -198,37 +197,7 @@ export function keywordSuggest(input_box_id, data_path, options = {}) {
    */
   function createKeywordSuggestion() {
     return `
-      <li class="suggestion-item keyword" data-id="noMatch" data-label-en="" data-label-ja="${currentKeywords.join(
-        ' '
-      )}">
-        <div class="label-container">
-          <span class="main-name">${currentKeywords.join(' ')}</span>
-        </div>
-      </li>`;
-  }
-
-  /**
-   * Creates the HTML for a keyword suggestion item.
-   * @returns {string} - The HTML string for the keyword suggestion item.
-   */
-  function createKeywordSuggestion() {
-    return `
       <li class="suggestion-item -keyword" data-id="noMatch" data-label-en="" data-label-ja="${currentKeywords.join(
-        ' '
-      )}">
-        <div class="label-container">
-          <span class="main-name">${currentKeywords.join(' ')}</span>
-        </div>
-      </li>`;
-  }
-
-  /**
-   * Creates the HTML for a "No Match" suggestion item.
-   * @returns {string} - The HTML string for the "No Match" suggestion item.
-   */
-  function createNoMatchSuggestion() {
-    return `
-      <li class="suggestion-item" data-id="noMatch" data-label-en="" data-label-ja="${currentKeywords.join(
         ' '
       )}">
         <div class="label-container">
